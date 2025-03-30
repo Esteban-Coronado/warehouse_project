@@ -1,0 +1,18 @@
+{
+    "virtualWarehouseConfig": {
+      "percentage": 20,
+      "minDistance": 10
+    },
+    "products": [
+      {
+        "id": 1,
+        "name": "Producto X",
+        "stock": 100
+      },
+      {
+        "id": 2,
+        "name": "Producto Y",
+        "stock": 50
+      }
+    ]
+  }
