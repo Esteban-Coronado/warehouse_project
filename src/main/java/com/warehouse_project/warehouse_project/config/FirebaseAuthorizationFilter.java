@@ -12,6 +12,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.List;
@@ -21,6 +22,14 @@ import java.util.stream.Collectors;
 public class FirebaseAuthorizationFilter extends OncePerRequestFilter {
 
     private final UserService userService;
+    private final AntPathMatcher pathMatcher = new AntPathMatcher();
+
+    // Rutas públicas que NO requieren autenticación
+    private static final String[] PUBLIC_PATHS = {
+            "/v3/api-docs/**",
+            "/swagger-ui/**",
+            "/swagger-ui.html"
+    };
 
     public FirebaseAuthorizationFilter(UserService userService) {
         this.userService = userService;
@@ -32,43 +41,51 @@ public class FirebaseAuthorizationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain)
             throws ServletException, IOException {
 
-        String authHeader = request.getHeader("Authorization");
+        String requestPath = request.getRequestURI();
 
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            String token = authHeader.substring(7);
-            try {
-                FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(token);
-                String uid = decodedToken.getUid();
-
-                // 1. Obtener roles de la base de datos
-                List<Role> roles = userService.getRolesByUid(uid);
-
-                //ToDo Borrar en producción
-                // 2. Log para ver qué roles se obtienen
-                System.out.println("UID desde el token: " + uid);
-                System.out.println("Roles del usuario: " + roles);
-
-                // 3. Convertir roles a GrantedAuthority
-                List<SimpleGrantedAuthority> authorities = roles.stream()
-                        .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getName().toUpperCase()))
-                        .collect(Collectors.toList());
-
-                //ToDo Borrar en producción
-                // 4. Log para ver las autoridades finales
-                System.out.println("Authorities asignadas: " + authorities);
-
-                // 5. Crear objeto de autenticación
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(uid, null, authorities);
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-
-            } catch (Exception e) {
-                SecurityContextHolder.clearContext();
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                return;
-            }
+        // 1. Si es ruta pública, ignorar el filtro
+        if (isPublicPath(requestPath)) {
+            filterChain.doFilter(request, response);
+            return;
         }
 
-        filterChain.doFilter(request, response);
+        // 2. Procesar autenticación para rutas protegidas
+        String authHeader = request.getHeader("Authorization");
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
+
+        String token = authHeader.substring(7);
+        try {
+            FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(token);
+            String uid = decodedToken.getUid();
+
+            List<Role> roles = userService.getRolesByUid(uid);
+            List<SimpleGrantedAuthority> authorities = roles.stream()
+                    .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getName().toUpperCase()))
+                    .collect(Collectors.toList());
+
+            UsernamePasswordAuthenticationToken authentication =
+                    new UsernamePasswordAuthenticationToken(uid, null, authorities);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            filterChain.doFilter(request, response);
+
+        } catch (Exception e) {
+            SecurityContextHolder.clearContext();
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        }
+    }
+
+    // Método para verificar rutas públicas
+    private boolean isPublicPath(String requestPath) {
+        for (String publicPath : PUBLIC_PATHS) {
+            if (pathMatcher.match(publicPath, requestPath)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

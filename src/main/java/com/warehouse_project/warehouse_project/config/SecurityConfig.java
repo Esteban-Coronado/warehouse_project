@@ -22,14 +22,19 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html"
+                        ).permitAll()
                         .requestMatchers("/auth/getUserInfo").hasAnyRole( "USER")  // Solo usuarios con rol ADMIN
-                        .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")
-                        /*.requestMatchers("/api/master-data/products").hasAnyRole( "ADMIN")*/
-
+                        .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN") // Usuarios con rol USER o ADMIN
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(firebaseAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
+
+
 }
