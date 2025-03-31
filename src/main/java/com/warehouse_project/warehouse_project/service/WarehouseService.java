@@ -98,4 +98,30 @@ public class WarehouseService {
                     return new RuntimeException("Almacén no encontrado");
                 });
     }
+
+    public void deleteWarehouse(String id) throws IOException {
+        logger.info("Eliminando almacén con ID: {}", id);
+        List<Warehouse> warehouses = loadWarehouses();
+        boolean removed = warehouses.removeIf(w -> w.getId().equals(id));
+        if (removed) {
+            saveWarehouses(warehouses);
+            logger.info("Almacén eliminado exitosamente con ID: {}", id);
+        } else {
+            logger.error("No se encontró un almacén con ID: {}", id);
+            throw new RuntimeException("Almacén no encontrado");
+        }
+    }
+
+    public void deleteWarehouseByName(String name) throws IOException {
+        logger.info("Eliminando almacén con nombre: {}", name);
+        List<Warehouse> warehouses = loadWarehouses();
+        boolean removed = warehouses.removeIf(w -> w.getName().equalsIgnoreCase(name));
+        if (removed) {
+            saveWarehouses(warehouses);
+            logger.info("Almacén eliminado exitosamente con nombre: {}", name);
+        } else {
+            logger.error("No se encontró un almacén con nombre: {}", name);
+            throw new RuntimeException("Almacén no encontrado");
+        }
+    }
 }

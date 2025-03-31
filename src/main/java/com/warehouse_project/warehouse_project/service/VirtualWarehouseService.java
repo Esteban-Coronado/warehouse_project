@@ -38,7 +38,7 @@ public class VirtualWarehouseService {
             // Obtener todos los almacenes físicos
             List<Warehouse> warehouses = warehouseService.getAllWarehouses();
             
-            // Mapa para acumular los stocks virtuales
+            // Mapa para acumular los stocks virtuales y precios
             Map<Long, Product> virtualProductsMap = new HashMap<>();
             
             for (Warehouse warehouse : warehouses) {
@@ -51,6 +51,11 @@ public class VirtualWarehouseService {
                     // Calcular y sumar el porcentaje del stock físico
                     int virtualStock = (int) Math.round(physicalProduct.getStock() * (percentage / 100.0));
                     virtualProduct.setStock(virtualProduct.getStock() + virtualStock);
+                    
+                    // Mantener el precio más alto
+                    if (physicalProduct.getPrice() > virtualProduct.getPrice()) {
+                        virtualProduct.setPrice(physicalProduct.getPrice());
+                    }
                 }
             }
             
