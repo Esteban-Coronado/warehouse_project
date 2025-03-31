@@ -85,6 +85,54 @@ public class JsonMasterDataService {
         return product;
     }
 
+    public ProductDto updateProductPrice(Long productId, double newPrice) throws IOException {
+        logger.info("Actualizando precio del producto ID: {} a: {}", productId, newPrice);
+        JsonMasterDataDto masterData = loadMasterData();
+        ProductDto product = masterData.getProducts().stream()
+                .filter(p -> p.getId().equals(productId))
+                .findFirst()
+                .orElseThrow(() -> {
+                    logger.error("Producto no encontrado con ID: {}", productId);
+                    return new RuntimeException("Producto no encontrado");
+                });
+
+        product.setPrice(newPrice);
+        saveMasterData(masterData);
+        return product;
+    }
+
+    public ProductDto updateProductCategory(Long productId, String newCategory) throws IOException {
+        logger.info("Actualizando categoría del producto ID: {} a: {}", productId, newCategory);
+        JsonMasterDataDto masterData = loadMasterData();
+        ProductDto product = masterData.getProducts().stream()
+                .filter(p -> p.getId().equals(productId))
+                .findFirst()
+                .orElseThrow(() -> {
+                    logger.error("Producto no encontrado con ID: {}", productId);
+                    return new RuntimeException("Producto no encontrado");
+                });
+
+        product.setCategory(newCategory);
+        saveMasterData(masterData);
+        return product;
+    }
+
+    public ProductDto updateProductName(Long productId, String newName) throws IOException {
+        logger.info("Actualizando nombre del producto ID: {} a: {}", productId, newName);
+        JsonMasterDataDto masterData = loadMasterData();
+        ProductDto product = masterData.getProducts().stream()
+                .filter(p -> p.getId().equals(productId))
+                .findFirst()
+                .orElseThrow(() -> {
+                    logger.error("Producto no encontrado con ID: {}", productId);
+                    return new RuntimeException("Producto no encontrado");
+                });
+
+        product.setName(newName);
+        saveMasterData(masterData);
+        return product;
+    }
+
     public ProductDto addProduct(ProductDto newProduct) throws IOException {
         logger.info("Añadiendo nuevo producto: {}", newProduct);
         JsonMasterDataDto masterData = loadMasterData();
