@@ -8,6 +8,5 @@ public class Warehouse {
     private String id;
     private String name;
     private String location;
-    private int virtualWarehousePercentage;
     private List<Product> products;
 }

@@ -70,7 +70,6 @@ public class WarehouseService {
         newWarehouse.setId(UUID.randomUUID().toString());
         newWarehouse.setName(creationDto.getName());
         newWarehouse.setLocation(creationDto.getLocation());
-        newWarehouse.setVirtualWarehousePercentage(currentPercentage); // Guardar el percentage vigente
         newWarehouse.setProducts(products);
         
         // Guardar en la lista de almacenes
