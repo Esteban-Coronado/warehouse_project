@@ -1,18 +1,22 @@
 {
-    "virtualWarehouseConfig": {
-      "percentage": 20,
-      "minDistance": 10
+  "virtualWarehouseConfig": {
+    "percentage": 20,
+    "minDistance": 10
+  },
+  "products": [
+    {
+      "id": 1,
+      "name": "Producto X",
+      "category": "Electrónicos",
+      "price": 299.99,
+      "stock": 100
     },
-    "products": [
-      {
-        "id": 1,
-        "name": "Producto X",
-        "stock": 100
-      },
-      {
-        "id": 2,
-        "name": "Producto Y",
-        "stock": 50
-      }
-    ]
-  }
+    {
+      "id": 2,
+      "name": "Producto Y",
+      "category": "Hogar",
+      "price": 49.99,
+      "stock": 50
+    }
+  ]
+}

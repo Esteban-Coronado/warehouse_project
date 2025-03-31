@@ -108,7 +108,7 @@ public class JsonMasterDataService {
     logger.debug("Obteniendo productos desde JSON maestro");
     JsonMasterDataDto masterData = loadMasterData();
     return masterData.getProducts().stream()
-            .map(dto -> new Product(dto.getId(), dto.getName(), dto.getStock()))
+            .map(dto -> new Product(dto.getId(), dto.getName(), dto.getStock(), dto.getCategory(), dto.getPrice()))
             .toList();
 }
 }
