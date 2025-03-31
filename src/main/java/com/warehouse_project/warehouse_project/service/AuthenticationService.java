@@ -20,12 +20,10 @@ public class AuthenticationService {
     @Autowired
     private RoleRepository roleRepository;
 
-    public UserInfoDTO getUserInfoFromPrincipal(Principal principal) {
+    public List<RoleDTO> getRolesFromPrincipal(Principal principal) {
         String uid = principal.getName();
-
-        System.out.println("Este es el maltito nombre: " + uid);
         User user = userRepository.findByUid(uid);
-        return new UserInfoDTO(user);
-
+        return user.getRoles().stream().map(RoleDTO::new).collect(Collectors.toList());
     }
+
 }

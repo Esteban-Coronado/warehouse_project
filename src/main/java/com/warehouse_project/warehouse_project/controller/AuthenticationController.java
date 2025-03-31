@@ -21,16 +21,4 @@ public class AuthenticationController {
         return principal.getName();
     }
 
-    @GetMapping("/getRoles")
-    public @ResponseBody UserInfoDTO getPrincipalRoles(Principal principal) {
-        return authenticationService.getUserInfoFromPrincipal(principal);
-    }
-
-
-
-
-
-
-
-
 }
