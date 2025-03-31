@@ -46,8 +46,8 @@ public class WarehouseService {
 
     private List<Warehouse> loadWarehouses() throws IOException {
         logger.debug("Cargando almacenes desde warehouses.json");
-        return objectMapper.readValue(warehousesResource.getFile(), 
-            objectMapper.getTypeFactory().constructCollectionType(List.class, Warehouse.class));
+        return objectMapper.readValue(warehousesResource.getFile(),
+                objectMapper.getTypeFactory().constructCollectionType(List.class, Warehouse.class));
     }
 
     private void saveWarehouses(List<Warehouse> warehouses) throws IOException {
@@ -60,25 +60,25 @@ public class WarehouseService {
 
     public Warehouse createWarehouse(WarehouseCreationDto creationDto) throws IOException {
         logger.info("Creando nuevo almacén: {}", creationDto.getName());
-        
+
         // Obtener productos y configuración del JSON maestro
         List<Product> products = jsonMasterDataService.getProductsFromMasterData();
         int currentPercentage = jsonMasterDataService.getVirtualWarehouseConfig().getPercentage();
-        
+
         // Crear nuevo almacén
         Warehouse newWarehouse = new Warehouse();
         newWarehouse.setId(UUID.randomUUID().toString());
         newWarehouse.setName(creationDto.getName());
         newWarehouse.setLocation(creationDto.getLocation());
         newWarehouse.setProducts(products);
-        
+
         // Guardar en la lista de almacenes
         List<Warehouse> warehouses = loadWarehouses();
         warehouses.add(newWarehouse);
         saveWarehouses(warehouses);
-        
-        logger.info("Almacén creado exitosamente con ID: {}. Porcentaje virtual: {}", 
-                   newWarehouse.getId(), currentPercentage);
+
+        logger.info("Almacén creado exitosamente con ID: {}. Porcentaje virtual: {}",
+                newWarehouse.getId(), currentPercentage);
         return newWarehouse;
     }
 
