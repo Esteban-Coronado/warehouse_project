@@ -79,7 +79,7 @@ public class JsonMasterDataService {
                     logger.error("Producto no encontrado con ID: {}", productId);
                     return new RuntimeException("Producto no encontrado");
                 });
-        
+
         product.setStock(newStock);
         saveMasterData(masterData);
         return product;
@@ -153,10 +153,10 @@ public class JsonMasterDataService {
     }
 
     public List<Product> getProductsFromMasterData() throws IOException {
-    logger.debug("Obteniendo productos desde JSON maestro");
-    JsonMasterDataDto masterData = loadMasterData();
-    return masterData.getProducts().stream()
-            .map(dto -> new Product(dto.getId(), dto.getName(), dto.getStock(), dto.getCategory(), dto.getPrice()))
-            .toList();
-}
+        logger.debug("Obteniendo productos desde JSON maestro");
+        JsonMasterDataDto masterData = loadMasterData();
+        return masterData.getProducts().stream()
+                .map(dto -> new Product(dto.getId(), dto.getName(), dto.getStock(), dto.getCategory(), dto.getPrice()))
+                .toList();
+    }
 }
