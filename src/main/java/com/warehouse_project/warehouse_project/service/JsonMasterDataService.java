@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.warehouse_project.warehouse_project.dto.JsonMasterDataDto;
 import com.warehouse_project.warehouse_project.dto.ProductDto;
 import com.warehouse_project.warehouse_project.dto.VirtualWarehouseConfigDto;
+import com.warehouse_project.warehouse_project.model.Product;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,7 +17,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class JsonMasterDataService {
@@ -78,7 +79,7 @@ public class JsonMasterDataService {
                     logger.error("Producto no encontrado con ID: {}", productId);
                     return new RuntimeException("Producto no encontrado");
                 });
-        
+
         product.setStock(newStock);
         saveMasterData(masterData);
         return product;
@@ -101,5 +102,13 @@ public class JsonMasterDataService {
             throw new RuntimeException("Producto no encontrado");
         }
         saveMasterData(masterData);
+    }
+
+    public List<Product> getProductsFromMasterData() throws IOException {
+        logger.debug("Obteniendo productos desde JSON maestro");
+        JsonMasterDataDto masterData = loadMasterData();
+        return masterData.getProducts().stream()
+                .map(dto -> new Product(dto.getId(), dto.getName(), dto.getStock(), dto.getCategory(), dto.getPrice()))
+                .toList();
     }
 }

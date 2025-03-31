@@ -23,7 +23,9 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/getUserInfo").hasAnyRole( "USER")  // Solo usuarios con rol ADMIN
-                        .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN") // Usuarios con rol USER o ADMIN
+                        .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")
+                        /*.requestMatchers("/api/master-data/products").hasAnyRole( "ADMIN")*/
+
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(firebaseAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
