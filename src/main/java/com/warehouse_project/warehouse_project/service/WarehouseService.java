@@ -70,6 +70,7 @@ public class WarehouseService {
         newWarehouse.setId(UUID.randomUUID().toString());
         newWarehouse.setName(creationDto.getName());
         newWarehouse.setLocation(creationDto.getLocation());
+        newWarehouse.setCoordinates(creationDto.getCoordinates()); // <-- Agregar esta línea
         newWarehouse.setProducts(products);
 
         // Guardar en la lista de almacenes
