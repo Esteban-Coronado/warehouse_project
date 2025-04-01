@@ -36,17 +36,16 @@ public class WarehouseController {
             @ApiResponse(responseCode = "500", description = "Error al crear el almacén")
     })
     @PostMapping
-public ResponseEntity<Warehouse> createWarehouse(@RequestBody WarehouseCreationDto creationDto) {
-    logger.info("Recibida solicitud para crear nuevo almacén: {}", creationDto.getName());
-    try {
-        Warehouse newWarehouse = warehouseService.createWarehouse(creationDto);
-        return ResponseEntity.ok(newWarehouse);
-    } catch (IOException e) {
-        logger.error("Error al crear almacén", e);
-        return ResponseEntity.internalServerError().build();
+    public ResponseEntity<Warehouse> createWarehouse(@RequestBody WarehouseCreationDto creationDto) {
+        logger.info("Recibida solicitud para crear nuevo almacén: {}", creationDto.getName());
+        try {
+            Warehouse newWarehouse = warehouseService.createWarehouse(creationDto);
+            return ResponseEntity.ok(newWarehouse);
+        } catch (IOException e) {
+            logger.error("Error al crear almacén", e);
+            return ResponseEntity.internalServerError().build();
+        }
     }
-}
-
 
     @Operation(summary = "Obtener todos los almacenes", description = "Recupera la lista de todos los almacenes disponibles")
     @ApiResponses(value = {
@@ -73,7 +72,8 @@ public ResponseEntity<Warehouse> createWarehouse(@RequestBody WarehouseCreationD
     public ResponseEntity<Warehouse> getWarehouseById(@PathVariable String id) {
         logger.debug("Solicitando almacén con ID: {}", id);
         try {
-            return ResponseEntity.ok(warehouseService.getWarehouseById(id));
+            Warehouse warehouse = warehouseService.getWarehouseById(id);
+            return ResponseEntity.ok(warehouse);
         } catch (Exception e) {
             logger.error("Error al obtener almacén con ID: {}", id, e);
             return ResponseEntity.internalServerError().build();

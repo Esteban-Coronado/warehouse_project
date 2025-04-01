@@ -2,6 +2,7 @@ package com.warehouse_project.warehouse_project.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.warehouse_project.warehouse_project.dto.WarehouseCreationDto;
+import com.warehouse_project.warehouse_project.model.Coordinates;
 import com.warehouse_project.warehouse_project.model.Product;
 import com.warehouse_project.warehouse_project.model.Warehouse;
 import org.slf4j.Logger;
@@ -60,27 +61,29 @@ public class WarehouseService {
 
     public Warehouse createWarehouse(WarehouseCreationDto creationDto) throws IOException {
         logger.info("Creando nuevo almacén: {}", creationDto.getName());
-
+    
         // Obtener productos y configuración del JSON maestro
         List<Product> products = jsonMasterDataService.getProductsFromMasterData();
         int currentPercentage = jsonMasterDataService.getVirtualWarehouseConfig().getPercentage();
-
+    
         // Crear nuevo almacén
         Warehouse newWarehouse = new Warehouse();
         newWarehouse.setId(UUID.randomUUID().toString());
         newWarehouse.setName(creationDto.getName());
         newWarehouse.setLocation(creationDto.getLocation());
+        newWarehouse.setCoordinates(creationDto.getCoordinates()); // <-- Agregar esta línea
         newWarehouse.setProducts(products);
-
+    
         // Guardar en la lista de almacenes
         List<Warehouse> warehouses = loadWarehouses();
         warehouses.add(newWarehouse);
         saveWarehouses(warehouses);
-
+    
         logger.info("Almacén creado exitosamente con ID: {}. Porcentaje virtual: {}",
                 newWarehouse.getId(), currentPercentage);
         return newWarehouse;
     }
+    
 
     public List<Warehouse> getAllWarehouses() throws IOException {
         List<Warehouse> warehouses = loadWarehouses();

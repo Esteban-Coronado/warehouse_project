@@ -8,6 +8,7 @@ public class Warehouse {
     private String id;
     private String name;
     private String location;
+    private Coordinates coordinates;
     private List<Product> products;
 
     public String getId() {
@@ -42,5 +43,11 @@ public class Warehouse {
         this.products = products;
     }
 
+    public Coordinates getCoordinates() {
+        return coordinates;
+    }
 
+    public void setCoordinates(Coordinates coordinates) {
+        this.coordinates = coordinates;
+    }
 }
