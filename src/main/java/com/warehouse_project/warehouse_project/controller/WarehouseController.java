@@ -6,7 +6,8 @@ import com.warehouse_project.warehouse_project.model.Product;
 import com.warehouse_project.warehouse_project.service.WarehouseService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import org.springframework.web.bind.annotation.RequestBody;
+
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.slf4j.Logger;
@@ -35,16 +36,17 @@ public class WarehouseController {
             @ApiResponse(responseCode = "500", description = "Error al crear el almacén")
     })
     @PostMapping
-    public ResponseEntity<Warehouse> createWarehouse(@RequestBody(description = "Datos para la creación del almacén") WarehouseCreationDto creationDto) {
-        logger.info("Recibida solicitud para crear nuevo almacén: {}", creationDto.getName());
-        try {
-            Warehouse newWarehouse = warehouseService.createWarehouse(creationDto);
-            return ResponseEntity.ok(newWarehouse);
-        } catch (IOException e) {
-            logger.error("Error al crear almacén", e);
-            return ResponseEntity.internalServerError().build();
-        }
+public ResponseEntity<Warehouse> createWarehouse(@RequestBody WarehouseCreationDto creationDto) {
+    logger.info("Recibida solicitud para crear nuevo almacén: {}", creationDto.getName());
+    try {
+        Warehouse newWarehouse = warehouseService.createWarehouse(creationDto);
+        return ResponseEntity.ok(newWarehouse);
+    } catch (IOException e) {
+        logger.error("Error al crear almacén", e);
+        return ResponseEntity.internalServerError().build();
     }
+}
+
 
     @Operation(summary = "Obtener todos los almacenes", description = "Recupera la lista de todos los almacenes disponibles")
     @ApiResponses(value = {

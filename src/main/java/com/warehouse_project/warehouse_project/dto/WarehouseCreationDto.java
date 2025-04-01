@@ -1,5 +1,4 @@
 package com.warehouse_project.warehouse_project.dto;
-
 import lombok.Data;
 
 @Data
