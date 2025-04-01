@@ -13,11 +13,12 @@ public class CorsConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**") // Permite todas las rutas
-                        .allowedOrigins("http://localhost:3000") // Permite peticiones desde React
+                registry.addMapping("/**") // Permitir todas las rutas
+                        .allowedOrigins("http://localhost:3000") // Permitir peticiones desde React
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                        .allowedHeaders("*")
-                        .allowCredentials(true);
+                        .allowedHeaders("*") // Permitir todos los headers
+                        .exposedHeaders("Authorization") // 🔥 Permitir leer el Authorization en la respuesta
+                        .allowCredentials(true); // Permitir cookies/sesiones si el backend las usa
             }
         };
     }
