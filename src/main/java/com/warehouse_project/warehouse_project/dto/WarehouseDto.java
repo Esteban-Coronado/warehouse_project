@@ -1,5 +1,5 @@
 package com.warehouse_project.warehouse_project.dto;
 
-public class ProductDto {
+public class WarehouseDto {
     
 }
