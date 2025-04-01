@@ -46,8 +46,8 @@ public class WarehouseService {
 
     private List<Warehouse> loadWarehouses() throws IOException {
         logger.debug("Cargando almacenes desde warehouses.json");
-        return objectMapper.readValue(warehousesResource.getFile(), 
-            objectMapper.getTypeFactory().constructCollectionType(List.class, Warehouse.class));
+        return objectMapper.readValue(warehousesResource.getFile(),
+                objectMapper.getTypeFactory().constructCollectionType(List.class, Warehouse.class));
     }
 
     private void saveWarehouses(List<Warehouse> warehouses) throws IOException {
@@ -60,26 +60,25 @@ public class WarehouseService {
 
     public Warehouse createWarehouse(WarehouseCreationDto creationDto) throws IOException {
         logger.info("Creando nuevo almacén: {}", creationDto.getName());
-        
+
         // Obtener productos y configuración del JSON maestro
         List<Product> products = jsonMasterDataService.getProductsFromMasterData();
         int currentPercentage = jsonMasterDataService.getVirtualWarehouseConfig().getPercentage();
-        
+
         // Crear nuevo almacén
         Warehouse newWarehouse = new Warehouse();
         newWarehouse.setId(UUID.randomUUID().toString());
         newWarehouse.setName(creationDto.getName());
         newWarehouse.setLocation(creationDto.getLocation());
-        newWarehouse.setVirtualWarehousePercentage(currentPercentage); // Guardar el percentage vigente
         newWarehouse.setProducts(products);
-        
+
         // Guardar en la lista de almacenes
         List<Warehouse> warehouses = loadWarehouses();
         warehouses.add(newWarehouse);
         saveWarehouses(warehouses);
-        
-        logger.info("Almacén creado exitosamente con ID: {}. Porcentaje virtual: {}", 
-                   newWarehouse.getId(), currentPercentage);
+
+        logger.info("Almacén creado exitosamente con ID: {}. Porcentaje virtual: {}",
+                newWarehouse.getId(), currentPercentage);
         return newWarehouse;
     }
 
@@ -98,5 +97,31 @@ public class WarehouseService {
                     logger.error("Almacén no encontrado con ID: {}", id);
                     return new RuntimeException("Almacén no encontrado");
                 });
+    }
+
+    public void deleteWarehouse(String id) throws IOException {
+        logger.info("Eliminando almacén con ID: {}", id);
+        List<Warehouse> warehouses = loadWarehouses();
+        boolean removed = warehouses.removeIf(w -> w.getId().equals(id));
+        if (removed) {
+            saveWarehouses(warehouses);
+            logger.info("Almacén eliminado exitosamente con ID: {}", id);
+        } else {
+            logger.error("No se encontró un almacén con ID: {}", id);
+            throw new RuntimeException("Almacén no encontrado");
+        }
+    }
+
+    public void deleteWarehouseByName(String name) throws IOException {
+        logger.info("Eliminando almacén con nombre: {}", name);
+        List<Warehouse> warehouses = loadWarehouses();
+        boolean removed = warehouses.removeIf(w -> w.getName().equalsIgnoreCase(name));
+        if (removed) {
+            saveWarehouses(warehouses);
+            logger.info("Almacén eliminado exitosamente con nombre: {}", name);
+        } else {
+            logger.error("No se encontró un almacén con nombre: {}", name);
+            throw new RuntimeException("Almacén no encontrado");
+        }
     }
 }

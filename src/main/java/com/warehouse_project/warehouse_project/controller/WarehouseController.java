@@ -69,4 +69,28 @@ public class WarehouseController {
             return ResponseEntity.internalServerError().build();
         }
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteWarehouse(@PathVariable String id) {
+        logger.info("Recibida solicitud para eliminar almacén con ID: {}", id);
+        try {
+            warehouseService.deleteWarehouse(id);
+            return ResponseEntity.noContent().build();
+        } catch (IOException e) {
+            logger.error("Error al eliminar almacén con ID: {}", id, e);
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @DeleteMapping("/nombre/{name}")
+    public ResponseEntity<Void> deleteWarehouseByName(@PathVariable String name) {
+        logger.info("Recibida solicitud para eliminar almacén con nombre: {}", name);
+        try {
+            warehouseService.deleteWarehouseByName(name);
+            return ResponseEntity.noContent().build();
+        } catch (IOException e) {
+            logger.error("Error al eliminar almacén con nombre: {}", name, e);
+            return ResponseEntity.internalServerError().build();
+        }
+    }
 }

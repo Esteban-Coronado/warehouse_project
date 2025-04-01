@@ -80,6 +80,45 @@ public class JsonMasterDataController {
         }
     }
 
+    @PutMapping("/products/{productId}/price")
+    public ResponseEntity<ProductDto> updateProductPrice(
+            @PathVariable Long productId,
+            @RequestParam double price) {
+        logger.info("Recibida solicitud para actualizar precio del producto {} a {}", productId, price);
+        try {
+            return ResponseEntity.ok(jsonMasterDataService.updateProductPrice(productId, price));
+        } catch (Exception e) {
+            logger.error("Error al actualizar precio del producto {}", productId, e);
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @PutMapping("/products/{productId}/category")
+    public ResponseEntity<ProductDto> updateProductCategory(
+            @PathVariable Long productId,
+            @RequestParam String category) {
+        logger.info("Recibida solicitud para actualizar categoría del producto {} a {}", productId, category);
+        try {
+            return ResponseEntity.ok(jsonMasterDataService.updateProductCategory(productId, category));
+        } catch (Exception e) {
+            logger.error("Error al actualizar categoría del producto {}", productId, e);
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @PutMapping("/products/{productId}/name")
+    public ResponseEntity<ProductDto> updateProductName(
+            @PathVariable Long productId,
+            @RequestParam String name) {
+        logger.info("Recibida solicitud para actualizar nombre del producto {} a {}", productId, name);
+        try {
+            return ResponseEntity.ok(jsonMasterDataService.updateProductName(productId, name));
+        } catch (Exception e) {
+            logger.error("Error al actualizar nombre del producto {}", productId, e);
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
     @PostMapping("/products")
     public ResponseEntity<ProductDto> addProduct(@RequestBody ProductDto newProduct) {
         logger.info("Recibida solicitud para añadir nuevo producto: {}", newProduct);
